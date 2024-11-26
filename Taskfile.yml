@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  default:
+    desc: List all available tasks.
+    cmds:
+      - cmd: task --list-all
+        silent: true
+
+  scrape:
+    desc: Scrape websites and store results in SQLite db.
+    cmds:
+      - cmd: go run ./cmd/scrape -db assets/data.db
+        silent: true
+
+  serve:
+    desc: Serve results of scraping under localhost:8080
+    cmds:
+      - cmd: go run ./cmd/serve -db assets/data.db -static web/static
+        silent: true
