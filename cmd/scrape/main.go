@@ -28,7 +28,9 @@ func main() {
 	}
 
 	babylonScraper := babylon.New(repo, slog.Default())
-	babylonScraper.Run()
-
-	slog.Info("Finished scrapping and storing data.")
+	if err := babylonScraper.Run(); err != nil {
+		slog.Error("Scraping Kino Babylon failed.", "err", err)
+	} else {
+		slog.Info("Scraping Kino Babylon succeeded.")
+	}
 }

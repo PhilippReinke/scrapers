@@ -24,13 +24,13 @@ type Scraper struct {
 
 func New(repo screening.Repo, logger *slog.Logger) *Scraper {
 	return &Scraper{
-		c:    colly.NewCollector(colly.Async(true)),
+		c:    colly.NewCollector(),
 		l:    logger,
 		repo: repo,
 	}
 }
 
-func (s *Scraper) Run() {
+func (s *Scraper) Run() error {
 	var lastMonth, yearOffset int
 
 	s.c.OnHTML("#regridart-207", func(e *colly.HTMLElement) {
@@ -73,8 +73,7 @@ func (s *Scraper) Run() {
 		s.l.Info("Running scraper...", "url", r.URL.String())
 	})
 
-	s.c.Visit(babylonAdress + "/programm")
-	s.c.Wait()
+	return s.c.Visit(babylonAdress + "/programm")
 }
 
 func buildID(cinema string, now time.Time, cnt int) string {
