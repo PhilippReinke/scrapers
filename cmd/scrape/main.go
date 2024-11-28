@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"github.com/PhilippReinke/scrapers/scrapers/babylon"
+	"github.com/PhilippReinke/scrapers/scrapers/yorck"
 	"github.com/PhilippReinke/scrapers/storage/screening"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -32,5 +34,12 @@ func main() {
 		slog.Error("Scraping Kino Babylon failed.", "err", err)
 	} else {
 		slog.Info("Scraping Kino Babylon succeeded.")
+	}
+
+	yorckScraper := yorck.New(repo, slog.Default())
+	if err := yorckScraper.Run(); err != nil {
+		slog.Error("Scraping Yorck Kino failed.", "err", err)
+	} else {
+		slog.Info("Scraping Yorck Kino succeeded.")
 	}
 }

@@ -2,6 +2,7 @@ package screening
 
 import (
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/PhilippReinke/scrapers/models"
@@ -76,10 +77,14 @@ func (sr *SQLite) queryLatestByCinema(filter models.Filter) ([]models.Screening,
 		if filter.Date != "" {
 			req = req.Where("DATE(date) = ?", filter.Date)
 		}
-		result := req.Find(&screeningsTemp)
+		result := req.Order("date asc").Find(&screeningsTemp)
 		_ = result // TODO: error handling.
 		screenings = append(screenings, screeningsTemp...)
 	}
+
+	sort.Slice(screenings, func(i, j int) bool {
+		return screenings[i].Date.Unix() < screenings[j].Date.Unix()
+	})
 
 	return screenings, nil
 }
@@ -93,12 +98,13 @@ func (sr *SQLite) FilterOptions() models.FilterOptions {
 	var scrapeIDs []int64
 	sr.db.Model(&models.Screening{}).
 		Distinct("scrape_id").
-		Order("scrape_id DESC").
+		Order("scrape_id desc").
 		Pluck("scrape_id", &scrapeIDs)
 
 	var unqiueDates []time.Time
 	sr.db.Model(&models.Screening{}).
 		Distinct("date").
+		Order("date asc").
 		Pluck("date", &unqiueDates)
 
 	var uniqueCinemas []string

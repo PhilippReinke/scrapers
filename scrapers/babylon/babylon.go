@@ -70,7 +70,7 @@ func (s *Scraper) Run() error {
 		})
 	})
 	s.c.OnRequest(func(r *colly.Request) {
-		s.l.Info("Running scraper...", "url", r.URL.String())
+		s.l.Debug("Running scraper...", "url", r.URL.String())
 	})
 
 	return s.c.Visit(babylonAdress + "/programm")
