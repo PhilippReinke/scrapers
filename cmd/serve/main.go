@@ -30,8 +30,8 @@ func main() {
 	}
 
 	e := setupEchoServer(screeningRepo, *staticPath, *templatePath)
-	slog.Info("Serving webpage...", "url", "localhost:8080")
-	if err := e.Start("localhost:8080"); err != nil {
+	slog.Info("Serving webpage...", "url", ":8081")
+	if err := e.Start(":8081"); err != nil {
 		slog.Error("Echo server failed.", "err", err)
 		os.Exit(1)
 	}

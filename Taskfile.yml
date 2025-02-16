@@ -14,7 +14,7 @@ tasks:
         silent: true
 
   serve:
-    desc: Serve results of scraping under localhost:8080
+    desc: Serve results of scraping under :8081
     cmds:
       - cmd: go run ./cmd/serve -db assets/data.db -static web/static
         silent: true
