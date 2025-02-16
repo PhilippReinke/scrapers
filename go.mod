@@ -1,6 +1,6 @@
 module github.com/PhilippReinke/scrapers
 
-go 1.23.3
+go 1.24
 
 require (
 	github.com/gocolly/colly/v2 v2.1.0
