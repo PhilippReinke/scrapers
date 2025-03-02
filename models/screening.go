@@ -1,9 +1,14 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Screening struct {
-	ID            string `gorm:"primaryKey"`
+	// ScrapeID is supposed to identify the scrape that generated this screening
+	// information. All screenings within a scrape share this ID.
+	//
+	// For now, the UNIX epoch from the begining of the scrape process is taken.
 	ScrapeID      int64
 	Title         string
 	Date          time.Time

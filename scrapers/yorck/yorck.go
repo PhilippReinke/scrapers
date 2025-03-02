@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/PhilippReinke/scrapers/models"
-	"github.com/PhilippReinke/scrapers/storage/screening"
+	"github.com/PhilippReinke/scrapers/repositories/screening"
 )
 
 const (
@@ -61,29 +61,26 @@ func (s *Scraper) Run() error {
 		return err
 	}
 
-	var cnt int
+	tz, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		return fmt.Errorf("failed to create timezone: %w", err)
+	}
+
 	now := time.Now()
 	for _, film := range films.Props.PageProps.Films {
 		for _, session := range film.Fields.Sessions {
 			s.repo.Insert(models.Screening{
-				ID:            buildID(session.Fields.Cinema.Fields.Name, now, cnt),
 				ScrapeID:      now.Unix(),
 				Title:         film.Fields.Title,
-				Date:          session.Fields.StartTime,
+				Date:          session.Fields.StartTime.In(tz),
 				Duration:      film.Fields.Runtime,
 				Cinema:        session.Fields.Cinema.Fields.Name,
 				ThumbnailLink: fmt.Sprintf("https:%v?w=480&q=75", film.Fields.HeroImage.Fields.Image.FieldsImage.File.URL),
 				Description:   "todo",
 				Link:          fmt.Sprintf("%v/%v", yorckAdress, film.Fields.Slug),
 			})
-			cnt++
 		}
 	}
 
 	return nil
-}
-
-func buildID(cinema string, now time.Time, cnt int) string {
-	cinemaNormalised := strings.ToLower(strings.ReplaceAll(cinema, " ", ""))
-	return fmt.Sprintf("%v-%v-%v", cinemaNormalised, now.Unix(), cnt)
 }

@@ -3,11 +3,10 @@ package babylon
 import (
 	"fmt"
 	"log/slog"
-	"strings"
 	"time"
 
 	"github.com/PhilippReinke/scrapers/models"
-	"github.com/PhilippReinke/scrapers/storage/screening"
+	"github.com/PhilippReinke/scrapers/repositories/screening"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -34,7 +33,6 @@ func (s *Scraper) Run() error {
 	var lastMonth, yearOffset int
 
 	s.c.OnHTML("#regridart-207", func(e *colly.HTMLElement) {
-		var cnt int
 		now := time.Now()
 
 		e.ForEach("li", func(n int, e *colly.HTMLElement) {
@@ -56,7 +54,6 @@ func (s *Scraper) Run() error {
 			link := babylonAdress + e.ChildAttr(".mix-title", "href")
 
 			s.repo.Insert(models.Screening{
-				ID:            buildID(models.KinoBabylon, now, cnt),
 				ScrapeID:      now.Unix(),
 				Title:         e.ChildTexts("h3")[2],
 				Date:          date,
@@ -66,7 +63,6 @@ func (s *Scraper) Run() error {
 				Description:   "todo",
 				Link:          link,
 			})
-			cnt++
 		})
 	})
 	s.c.OnRequest(func(r *colly.Request) {
@@ -74,11 +70,6 @@ func (s *Scraper) Run() error {
 	})
 
 	return s.c.Visit(babylonAdress + "/programm")
-}
-
-func buildID(cinema string, now time.Time, cnt int) string {
-	cinemaNormalised := strings.ToLower(strings.ReplaceAll(cinema, " ", ""))
-	return fmt.Sprintf("%v-%v-%v", cinemaNormalised, now.Unix(), cnt)
 }
 
 func parseDate(dateString string, lastMonth, yearOffset *int) (time.Time, error) {
@@ -97,7 +88,12 @@ func parseDate(dateString string, lastMonth, yearOffset *int) (time.Time, error)
 	}
 	*lastMonth = month
 
-	return time.Date(year+*yearOffset, time.Month(month), day, hour, minute, 0, 0, time.Local), nil
+	tz, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		return time.Time{}, fmt.Errorf("failed to create timezone: %w", err)
+	}
+
+	return time.Date(year+*yearOffset, time.Month(month), day, hour, minute, 0, 0, tz), nil
 }
 
 func parseDuration(durationString string) (int, error) {

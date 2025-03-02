@@ -10,9 +10,7 @@ import (
 	"text/template"
 
 	"github.com/PhilippReinke/scrapers/models"
-	"github.com/PhilippReinke/scrapers/storage/screening"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/PhilippReinke/scrapers/repositories/screening"
 
 	"github.com/labstack/echo/v4"
 )
@@ -38,14 +36,9 @@ func main() {
 }
 
 func loadScreeningRepo(dbPath string) (screening.Repo, error) {
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	repo, err := screening.NewSQLiteRepo(dbPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create DB: %v", err)
-	}
-
-	repo, err := screening.NewSQLiteRepo(db)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create SQLite table: %v", err)
+		return nil, fmt.Errorf("failed to open SQLite: %v", err)
 	}
 
 	return repo, nil

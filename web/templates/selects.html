@@ -1,20 +1,20 @@
-{{define "selects"}}
+{{ define "selects" }}
 <select name="scrape-ids">
 	<option value="">latest</option>
-	{{range .ScrapeIDs}}
-	<option value="{{.}}">{{.}}</option>
-	{{end}}
+	{{ range .ScrapeIDs }}
+	<option value="{{ . }}">{{ . }}</option>
+	{{ end }}
 </select>
 <select name="dates">
 	<option value="">all</option>
-	{{range .Dates}}
-	<option value='{{.Format "2006-01-02"}}'>{{.Format "02.01.2006"}}</option>
-	{{end}}
+	{{ range .Dates }}
+	<option value='{{ .Format "2006-01-02" }}'>{{ .Format "02.01.2006" }}</option>
+	{{ end }}
 </select>
 <select name="cinemas">
 	<option value="">all</option>
-	{{range .Cinemas}}
-	<option value="{{.}}">{{.}}</option>
-	{{end}}
+	{{ range .Cinemas }}
+	<option value="{{ . }}">{{ . }}</option>
+	{{ end }}
 </select>
-{{end}}
+{{ end }}

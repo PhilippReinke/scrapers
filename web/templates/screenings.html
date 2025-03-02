@@ -1,18 +1,18 @@
-{{define "screenings"}}
-{{range .}}
+{{ define "screenings" }}
+{{ range . }}
 <div class="screening">
-	<a href="{{.Link}}" target="_blank"><img src="{{.ThumbnailLink}}"></a>
+	<a href="{{ .Link }}" target="_blank"><img src="{{ .ThumbnailLink }}"></a>
 	<div class="info">
-		<h3><a href="{{.Link}}" target="_blank">{{.Title}}</a></h3>
+		<h3><a href="{{ .Link }}" target="_blank">{{ .Title }}</a></h3>
 		<table>
 			<tr>
-				<td>{{.Cinema}}</td>
-				<td>{{.Duration}} Minutes</td>
-				<td>{{.Date.Format "02.01.2006"}} at {{.Date.Format "15:04"}}<br>{{.Date.Format "Monday"}}</td>
+				<td>{{ .Cinema }}</td>
+				<td>{{ .Duration }} Minutes</td>
+				<td>{{ .Date.Format "02.01.2006" }} at {{ .Date.Format "15:04" }}<br>{{ .Date.Format "Monday" }}</td>
 			</tr>
 		</table>
 	</div>
 </div>
 </tr>
-{{end}}
-{{end}}
+{{ end }}
+{{ end }}
